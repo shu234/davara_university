@@ -81,7 +81,7 @@ export default function Header() {
                     <li className="font-semibold text-gray-900">Leadership</li>
                     <li><Link href="/components/Leadership/ChancellorMessage.tsx" className="hover:text-[#191970]">Chancellor</Link></li>
                     <li><Link href="/about/mres" className="hover:text-[#191970]">MRES</Link></li>
-                    <li><Link href="/about/directors-general" className="hover:text-[#191970]">Directors General's</Link></li>
+                    <li><Link href="/about/directors-general" className="hover:text-[#191970]">Directors General&apos;s</Link></li>
                     <li><Link href="/about/founder-director" className="hover:text-[#191970]">Founder Director</Link></li>
                     <li><Link href="/about/ceo" className="hover:text-[#191970]">Chief Executive Officer</Link></li>
                     <li><Link href="/about/honorary-director" className="hover:text-[#191970]">Honorary Director</Link></li>

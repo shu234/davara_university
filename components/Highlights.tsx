@@ -117,7 +117,7 @@ export default function StatsSection() {
             Our Impact in Numbers
           </h2>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            For over 50 years, we've been committed to excellence in education, research, and community engagement.
+            For over 50 years, we&apos;ve been committed to excellence in education, research, and community engagement.
           </p>
         </div>
 

@@ -137,7 +137,7 @@ export default function Header() {
                       <li className="font-semibold text-gray-900">Leadership</li>
                       <li><Link href="/about/chancellor">Chancellor</Link></li>
                       <li><Link href="/about/mres">MRES</Link></li>
-                      <li><Link href="/about/directors-general">Directors General's</Link></li>
+                      <li><Link href="/about/directors-general">Directors General&apos;s</Link></li>
                       <li><Link href="/about/founder-director">Founder Director</Link></li>
                       <li><Link href="/about/ceo">CEO</Link></li>
                       <li><Link href="/about/honorary-director">Honorary Director</Link></li>
