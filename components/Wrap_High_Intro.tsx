@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Highlights from "@/components/Highlights"
-import Sort_Intro from "@/components/Sort_Intro"
+// import Sort_Intro from "@/components/Sort_Intro"
 
 const Wrap_High_Intro = () => {
   return (
