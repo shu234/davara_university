@@ -12,7 +12,7 @@ interface PannellumLib {
   viewer: (
     id: string,
     options: {
-      type: string;
+      type: 'equirectangular';
       panorama: string;
       autoLoad: boolean;
       showControls: boolean;
@@ -21,7 +21,7 @@ interface PannellumLib {
   ) => void;
 }
 
-// Extend window type so we don’t need `any`
+// Extend window type
 declare global {
   interface Window {
     pannellum?: PannellumLib;
@@ -34,7 +34,6 @@ export default function VirtualCampusTour() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch from CMS (WordPress REST or GraphQL endpoint)
     fetch('https://your-wordpress-site.com/wp-json/custom/v1/campus-tour')
       .then((res) => res.json())
       .then((data: CampusTourData) => {
@@ -46,9 +45,9 @@ export default function VirtualCampusTour() {
 
   useEffect(() => {
     if (tourImage) {
-      import('pannellum/build/pannellum.js').then((pannellumLib) => {
-        const pannellum: PannellumLib | undefined =
-          (pannellumLib as unknown as PannellumLib) || window.pannellum;
+      import('pannellum/build/pannellum.js').then((pannellumLib: unknown) => {
+        const pannellum =
+          (pannellumLib as PannellumLib) || window.pannellum;
 
         if (pannellum) {
           pannellum.viewer('panorama', {
@@ -63,12 +62,15 @@ export default function VirtualCampusTour() {
     }
   }, [tourImage]);
 
-  if (loading) return <p className="text-center py-20">Loading campus tour...</p>;
-  if (error) return <p className="text-center py-20 text-red-500">{error}</p>;
+  if (loading) {
+    return <p className="text-center py-20">Loading campus tour...</p>;
+  }
+  if (error) {
+    return <p className="text-center py-20 text-red-500">{error}</p>;
+  }
 
   return (
     <div className="w-full h-[600px] rounded-2xl shadow-lg overflow-hidden">
-      {/* Pannellum viewer will mount here */}
       <div id="panorama" className="w-full h-full"></div>
     </div>
   );
