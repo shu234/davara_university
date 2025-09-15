@@ -3,8 +3,15 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
+interface Achievement {
+  title: string;
+  image: string;
+  link: string;
+  type: string;
+}
+
 export default function AchievementsSection() {
-  const achievements = [
+  const achievements: Achievement[] = [
     {
       title: "NIRF 2025: Top 10 in India",
       image: "/images/achievements/nirf.png",
@@ -37,12 +44,12 @@ export default function AchievementsSection() {
     },
   ];
 
-  const [hovered, setHovered] = useState(null);
+  // ✅ Fix: explicitly allow number or null
+  const [hovered, setHovered] = useState<number | null>(null);
 
   return (
     <section className="bg-gray-50 py-20 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#191970] mb-4">
@@ -96,7 +103,10 @@ export default function AchievementsSection() {
 
       {/* Optional Background Decorative Elements */}
       <div className="absolute top-10 left-5 w-28 h-28 bg-gradient-to-r from-blue-200 to-purple-200 rounded-full opacity-15 blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-10 right-5 w-32 h-32 bg-gradient-to-r from-green-200 to-blue-200 rounded-full opacity-15 blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <div
+        className="absolute bottom-10 right-5 w-32 h-32 bg-gradient-to-r from-green-200 to-blue-200 rounded-full opacity-15 blur-3xl animate-pulse"
+        style={{ animationDelay: '1s' }}
+      ></div>
     </section>
   );
 }
