@@ -1,6 +1,6 @@
 // app/layout.tsx
 import "./globals.css";
-import Link from "next/link";
+// import Link from "next/link";
 import Header from "@/components/About _the _University";
 import Secondary_header from "@/components/Secondary_header";
 import Footer from "@/components/Footer";

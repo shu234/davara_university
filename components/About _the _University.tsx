@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
-import Logo from "./Logo";
+// import Logo from "./Logo";
 
 export default function Header() {
   const [aboutOpen, setAboutOpen] = useState(false);

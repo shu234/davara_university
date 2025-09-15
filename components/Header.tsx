@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import Container from "./Container";
-import { useState, useEffect, useRef } from "react";
-import Logo from "./Logo";
-import HeaderMenu from "./HeaderMenu";
-import { FaSearch } from "react-icons/fa";
+import Link from 'next/link';
+import { useState, useEffect, useRef } from 'react';
+import Container from './Container';
+import Logo from './Logo';
+import HeaderMenu from './HeaderMenu';
+import { FaSearch } from 'react-icons/fa';
 
-// Utility: throttle function
-function throttle(func: Function, limit: number) {
-  let lastFunc: any;
+// Type-safe throttle function
+function throttle<T extends (...args: any[]) => void>(func: T, limit: number) {
+  let lastFunc: NodeJS.Timeout;
   let lastRan: number;
-  return function (...args: any) {
+  return function (this: any, ...args: Parameters<T>) {
     if (!lastRan) {
-      func.apply(null, args);
+      func.apply(this, args);
       lastRan = Date.now();
     } else {
       clearTimeout(lastFunc);
-      lastFunc = setTimeout(function () {
+      lastFunc = setTimeout(() => {
         if (Date.now() - lastRan >= limit) {
-          func.apply(null, args);
+          func.apply(this, args);
           lastRan = Date.now();
         }
       }, limit - (Date.now() - lastRan));
@@ -29,31 +29,31 @@ function throttle(func: Function, limit: number) {
 
 export default function Header() {
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const aboutRef = useRef<HTMLLIElement>(null);
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // Shadow on scroll with throttling
+  // Shadow on scroll
   useEffect(() => {
     const handleScroll = throttle(() => {
       setScrolled(window.scrollY > 10);
     }, 100);
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close about menu on outside click
+  // Close About menu on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (aboutRef.current && !aboutRef.current.contains(event.target as Node)) {
         setAboutOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Debounced search
@@ -61,32 +61,30 @@ export default function Header() {
     const value = e.target.value;
     setSearchQuery(value);
 
-    if (searchTimeout) clearTimeout(searchTimeout);
-    const timeout = setTimeout(() => {
-      console.log("Searching for:", value);
-      // Implement actual search API call here
-    }, 500); // 500ms debounce
-    setSearchTimeout(timeout);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+      console.log('Searching for:', value);
+      // Call your search API here
+    }, 500);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
+    console.log('Searching for:', searchQuery);
   };
 
-  // Navigation links
   const navLinks = [
-    { name: "ACADEMICS", href: "/academics" },
-    { name: "PROGRAMMES", href: "/programmes" },
-    { name: "ADMISSIONS", href: "/admissions" },
-    { name: "INTERNATIONAL", href: "/international" },
-    { name: "CONTACT US", href: "/contact" },
+    { name: 'ACADEMICS', href: '/academics' },
+    { name: 'PROGRAMMES', href: '/programmes' },
+    { name: 'ADMISSIONS', href: '/admissions' },
+    { name: 'INTERNATIONAL', href: '/international' },
+    { name: 'CONTACT US', href: '/contact' },
   ];
 
   return (
     <header
       className={`bg-white sticky top-0 z-50 transition-shadow ${
-        scrolled ? "shadow-lg" : "shadow-md"
+        scrolled ? 'shadow-lg' : 'shadow-md'
       }`}
     >
       <Container>
@@ -100,7 +98,7 @@ export default function Header() {
               {/* ABOUT Dropdown */}
               <li
                 ref={aboutRef}
-                className="relative"
+                className="relative group"
                 onMouseEnter={() => setAboutOpen(true)}
                 onMouseLeave={() => setAboutOpen(false)}
               >
@@ -110,7 +108,7 @@ export default function Header() {
                   aria-expanded={aboutOpen}
                   onClick={() => setAboutOpen(!aboutOpen)}
                   onKeyDown={(e) => {
-                    if (e.key === "Escape") setAboutOpen(false);
+                    if (e.key === 'Escape') setAboutOpen(false);
                   }}
                 >
                   ABOUT
@@ -141,7 +139,7 @@ export default function Header() {
                       <li><Link href="/about/mres">MRES</Link></li>
                       <li><Link href="/about/directors-general">Directors General's</Link></li>
                       <li><Link href="/about/founder-director">Founder Director</Link></li>
-                      <li><Link href="/about/ceo">Chief Executive Officer</Link></li>
+                      <li><Link href="/about/ceo">CEO</Link></li>
                       <li><Link href="/about/honorary-director">Honorary Director</Link></li>
                       <li><Link href="/about/vice-chancellor">Vice Chancellor</Link></li>
                       <li><Link href="/about/registrar">Registrar</Link></li>
