@@ -1,29 +1,41 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+
+// Type for CMS data
+interface CampusTourData {
+  imageUrl?: string;
+}
+
+// Minimal type for Pannellum
+interface PannellumType {
+  viewer: (id: string, options: object) => void;
+}
 
 export default function VirtualCampusTour() {
   const [tourImage, setTourImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Example: fetch from CMS (replace with real API)
-    fetch("https://your-cms.com/api/campus-tour")
-      .then((res) => res.json())
-      .then((data) => {
-        setTourImage(data.imageUrl || "/campus-360.jpg");
-      });
+    // Fetch from CMS (WordPress REST or GraphQL endpoint)
+    fetch('https://your-wordpress-site.com/wp-json/custom/v1/campus-tour')
+      .then(res => res.json())
+      .then((data: CampusTourData) => {
+        setTourImage(data.imageUrl || '/campus-360.jpg');
+      })
+      .catch(() => setError('Failed to load campus tour'))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
     if (tourImage) {
-      // Dynamically load pannellum
-      import("pannellum/build/pannellum.js").then((pannellumLib) => {
-        // pannellum is default export on window
-        const pannellum = (pannellumLib as any).default || (window as any).pannellum;
+      import('pannellum/build/pannellum.js').then((pannellumLib) => {
+        const pannellum = (pannellumLib as unknown as PannellumType).viewer || (window as any).pannellum;
 
         if (pannellum) {
-          pannellum.viewer("panorama", {
-            type: "equirectangular",
+          pannellum.viewer('panorama', {
+            type: 'equirectangular',
             panorama: tourImage,
             autoLoad: true,
             showControls: true,
@@ -34,12 +46,13 @@ export default function VirtualCampusTour() {
     }
   }, [tourImage]);
 
+  if (loading) return <p className="text-center py-20">Loading campus tour...</p>;
+  if (error) return <p className="text-center py-20 text-red-500">{error}</p>;
+
   return (
     <div className="w-full h-[600px] rounded-2xl shadow-lg overflow-hidden">
-      {/* This div will host pannellum viewer */}
+      {/* Pannellum viewer will mount here */}
       <div id="panorama" className="w-full h-full"></div>
-
-      <p></p>
     </div>
   );
 }

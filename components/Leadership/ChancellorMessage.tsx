@@ -22,8 +22,14 @@ export default function ChancellorMessage() {
 
         {/* Message Text */}
         <div className="md:w-2/3 text-gray-700">
-          <h2 className="text-3xl font-bold text-[#1B2951] mb-4">Chancellor’s Message</h2>
-          <p className="mb-2 font-semibold text-lg">Mrs. Preeti Davara<br/>Hon'ble Chancellor</p>
+          <h2 className="text-3xl font-bold text-[#1B2951] mb-4">
+            Chancellor&apos;s Message
+          </h2>
+          <p className="mb-2 font-semibold text-lg">
+            Mrs. Preeti Davara
+            <br />
+            Hon&apos;ble Chancellor
+          </p>
           <p className="mb-4">
             Leading Shri Davara University is a wonderful honour and a source of great pleasure for me.
           </p>
@@ -40,7 +46,7 @@ export default function ChancellorMessage() {
             Our curriculum, which is incredibly modern and has been benchmarked against the academic offerings of other reputable schools, is the outcome of fantastic think tanks that include numerous faculty members, industry professionals, and research organisations.
           </p>
           <p className="mb-4 italic text-lg text-[#1B2951]/80">
-            “The finest education is that which makes our life in harmony with all existence, rather than only giving us facts.” – Guru Rabindranath Tagore
+            &ldquo;The finest education is that which makes our life in harmony with all existence, rather than only giving us facts.&rdquo; – Guru Rabindranath Tagore
           </p>
           <p>
             The students at Shri Davara University can look forward to a fresh academic life filled with love, happiness, and creative knowledge.

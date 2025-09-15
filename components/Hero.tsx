@@ -2,10 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
-export default function HeroSection({ slidesData }: { slidesData?: any[] }) {
-  // Use slidesData from CMS if provided, otherwise fallback to default
-  const defaultSlides = [
+type Slide = {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+  bgColor: string;
+  linkPrimary: string;
+  linkSecondary: string;
+};
+
+interface HeroSectionProps {
+  slidesData?: Slide[];
+}
+
+export default function HeroSection({ slidesData }: HeroSectionProps) {
+  const defaultSlides: Slide[] = [
     {
       id: 1,
       title: "Your Future Starts Here",
@@ -42,13 +58,12 @@ export default function HeroSection({ slidesData }: { slidesData?: any[] }) {
   ];
 
   const slides = slidesData && slidesData.length > 0 ? slidesData : defaultSlides;
-
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Auto-slide every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide(prev => (prev === slides.length - 1 ? 0 : prev + 1));
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
     }, 5000);
     return () => clearInterval(interval);
   }, [slides.length]);
@@ -63,10 +78,12 @@ export default function HeroSection({ slidesData }: { slidesData?: any[] }) {
           }`}
         >
           {/* Hero Image */}
-          <img
+          <Image
             src={slide.image}
             alt={slide.title}
-            className="w-full h-full object-cover"
+            fill
+            priority={index === 0}
+            className="object-cover"
           />
 
           {/* Overlay for text */}
