@@ -20,6 +20,8 @@ export default function CampusLifeSection() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
+    const cards = cardRefs.current; // ✅ snapshot of current refs
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -32,12 +34,12 @@ export default function CampusLifeSection() {
       { threshold: 0.2 }
     );
 
-    cardRefs.current.forEach((card) => {
+    cards.forEach((card) => {
       if (card) observer.observe(card);
     });
 
     return () => {
-      cardRefs.current.forEach((card) => {
+      cards.forEach((card) => {
         if (card) observer.unobserve(card);
       });
     };
@@ -68,7 +70,7 @@ export default function CampusLifeSection() {
                 ref={(el) => (cardRefs.current[index] = el)}
                 data-index={index}
                 className={`group relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 transform
-                  ${visibleCards.includes(index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}
+                  ${visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
                   hover:shadow-xl hover:-translate-y-1`}
               >
                 <Image
@@ -98,7 +100,7 @@ export default function CampusLifeSection() {
                 ref={(el) => (cardRefs.current[facilities.length + index] = el)}
                 data-index={facilities.length + index}
                 className={`group relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 transform
-                  ${visibleCards.includes(facilities.length + index) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}
+                  ${visibleCards.includes(facilities.length + index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
                   hover:shadow-xl hover:-translate-y-1`}
               >
                 <Image
