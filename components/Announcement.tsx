@@ -5,37 +5,50 @@ import { useEffect, useRef, useState } from 'react';
 type Notice = { title: string; date: string; pdfUrl: string };
 type Announcement = { title: string; pdfUrl: string };
 
+// Raw WordPress API types (adjust if your WP API differs)
+interface WPNotice {
+  title: { rendered: string };
+  acf: { date: string; pdf_url: string };
+}
+
+interface WPAnnouncement {
+  title: { rendered: string };
+  acf: { pdf_url: string };
+}
+
 export default function NoticesAndAnnouncements() {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
   const noticesRef = useRef<HTMLDivElement>(null);
   const announcementsRef = useRef<HTMLDivElement>(null);
-  const pauseNotices = useRef({ value: false, timeout: 0 as unknown as NodeJS.Timeout });
-  const pauseAnnouncements = useRef({ value: false, timeout: 0 as unknown as NodeJS.Timeout });
+  const pauseNotices = useRef<{ value: boolean; timeout: NodeJS.Timeout | null }>({ value: false, timeout: null });
+  const pauseAnnouncements = useRef<{ value: boolean; timeout: NodeJS.Timeout | null }>({ value: false, timeout: null });
 
   // Fetch data from WordPress
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Notices
         const noticesRes = await fetch(
           'https://your-wordpress-site.com/wp-json/wp/v2/notices?per_page=100'
         );
-        const noticesData: any[] = await noticesRes.json();
-        const formattedNotices: Notice[] = noticesData.map(n => ({
+        const noticesData: WPNotice[] = await noticesRes.json();
+        const formattedNotices: Notice[] = noticesData.map((n) => ({
           title: n.title.rendered,
           date: n.acf.date,
-          pdfUrl: n.acf.pdf_url
+          pdfUrl: n.acf.pdf_url,
         }));
         setNotices([...formattedNotices, ...formattedNotices]); // duplicate for scroll
 
+        // Announcements
         const announcementsRes = await fetch(
           'https://your-wordpress-site.com/wp-json/wp/v2/announcements?per_page=100'
         );
-        const announcementsData: any[] = await announcementsRes.json();
-        const formattedAnnouncements: Announcement[] = announcementsData.map(a => ({
+        const announcementsData: WPAnnouncement[] = await announcementsRes.json();
+        const formattedAnnouncements: Announcement[] = announcementsData.map((a) => ({
           title: a.title.rendered,
-          pdfUrl: a.acf.pdf_url
+          pdfUrl: a.acf.pdf_url,
         }));
         setAnnouncements([...formattedAnnouncements, ...formattedAnnouncements]);
       } catch (err) {
@@ -72,7 +85,7 @@ export default function NoticesAndAnnouncements() {
 
   const handleUserScroll = (pauseRef: typeof pauseNotices) => {
     pauseRef.current.value = true;
-    clearTimeout(pauseRef.current.timeout);
+    if (pauseRef.current.timeout) clearTimeout(pauseRef.current.timeout);
     pauseRef.current.timeout = setTimeout(() => {
       pauseRef.current.value = false;
     }, 3000);
