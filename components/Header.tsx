@@ -8,10 +8,10 @@ import HeaderMenu from './HeaderMenu';
 import { FaSearch } from 'react-icons/fa';
 
 // Type-safe throttle function
-function throttle<T extends (...args: any[]) => void>(func: T, limit: number) {
+function throttle<T extends (...args: unknown[]) => void>(func: T, limit: number) {
   let lastFunc: NodeJS.Timeout;
   let lastRan: number;
-  return function (this: any, ...args: Parameters<T>) {
+  return function (this: unknown, ...args: Parameters<T>) {
     if (!lastRan) {
       func.apply(this, args);
       lastRan = Date.now();
@@ -48,7 +48,8 @@ export default function Header() {
   // Close About menu on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (aboutRef.current && !aboutRef.current.contains(event.target as Node)) {
+      const currentRef = aboutRef.current;
+      if (currentRef && !currentRef.contains(event.target as Node)) {
         setAboutOpen(false);
       }
     };
@@ -123,37 +124,79 @@ export default function Header() {
                   >
                     {/* Column 1 */}
                     <ul className="space-y-2">
-                      <li><Link href="/about/overview">Overview</Link></li>
-                      <li><Link href="/about/why-davara">WHY DAVARA</Link></li>
-                      <li><Link href="/about/approvals">Approvals & Recognitions</Link></li>
-                      <li><Link href="/about/vision-mission">Vision & Mission</Link></li>
-                      <li><Link href="/about/awards">Awards & Achievements</Link></li>
-                      <li><Link href="/about/code-of-conduct">Code of Conduct</Link></li>
-                      <li><Link href="/about/core-values">Core Values</Link></li>
+                      <li>
+                        <Link href="/about/overview">Overview</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/why-davara">WHY DAVARA</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/approvals">Approvals &amp; Recognitions</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/vision-mission">Vision &amp; Mission</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/awards">Awards &amp; Achievements</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/code-of-conduct">Code of Conduct</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/core-values">Core Values</Link>
+                      </li>
                     </ul>
 
                     {/* Column 2 */}
                     <ul className="space-y-2">
                       <li className="font-semibold text-gray-900">Leadership</li>
-                      <li><Link href="/about/chancellor">Chancellor</Link></li>
-                      <li><Link href="/about/mres">MRES</Link></li>
-                      <li><Link href="/about/directors-general">Directors General&apos;s</Link></li>
-                      <li><Link href="/about/founder-director">Founder Director</Link></li>
-                      <li><Link href="/about/ceo">CEO</Link></li>
-                      <li><Link href="/about/honorary-director">Honorary Director</Link></li>
-                      <li><Link href="/about/vice-chancellor">Vice Chancellor</Link></li>
-                      <li><Link href="/about/registrar">Registrar</Link></li>
-                      <li><Link href="/about/controller-exam">Controller of Examination</Link></li>
+                      <li>
+                        <Link href="/about/chancellor">Chancellor</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/mres">MRES</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/directors-general">Directors General&apos;s</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/founder-director">Founder Director</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/ceo">CEO</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/honorary-director">Honorary Director</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/vice-chancellor">Vice Chancellor</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/registrar">Registrar</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/controller-exam">Controller of Examination</Link>
+                      </li>
                     </ul>
 
                     {/* Column 3 */}
                     <ul className="space-y-2">
                       <li className="font-semibold text-gray-900">University Councils</li>
-                      <li><Link href="/about/court-of-du">Court of DU</Link></li>
-                      <li><Link href="/about/executive-council">Executive Council</Link></li>
-                      <li><Link href="/about/academic-council">Academic Council</Link></li>
-                      <li><Link href="/about/planning-board">Planning Board</Link></li>
-                      <li><Link href="/about/finance-committee">Finance Committee</Link></li>
+                      <li>
+                        <Link href="/about/court-of-du">Court of DU</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/executive-council">Executive Council</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/academic-council">Academic Council</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/planning-board">Planning Board</Link>
+                      </li>
+                      <li>
+                        <Link href="/about/finance-committee">Finance Committee</Link>
+                      </li>
                     </ul>
                   </div>
                 )}
