@@ -1,29 +1,27 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
-import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
-// import Logo from "./Logo";
+import Link from 'next/link';
+import { useState, useRef, useEffect } from 'react';
+import { FaSearch, FaBars, FaTimes } from 'react-icons/fa';
+import Image from 'next/image';
 
 export default function Header() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim() !== "") console.log("Searching for:", searchQuery);
+    if (searchQuery.trim() !== '') console.log('Searching for:', searchQuery);
   };
 
-  // Focus input when search opens
   useEffect(() => {
     if (searchOpen && inputRef.current) inputRef.current.focus();
   }, [searchOpen]);
 
-  // Close search when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -33,35 +31,39 @@ export default function Header() {
         setSearchOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const navLinks = ['ACADEMICS', 'PROGRAMMES', 'ADMISSIONS', 'INTERNATIONAL', 'CONTACT US'];
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div className="text-2xl font-bold text-[#191970]">
-          <Link href="/public/images/davara-logo.png">University</Link>
-        </div>
-        {/* <Logo/> */}
+        <Link href="/" className="flex items-center space-x-2">
+          <Image
+            src="/images/davara-logo.png"
+            alt="Davara University Logo"
+            width={160}
+            height={50}
+            priority
+          />
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-6">
-          <ul className="flex space-x-8 font-medium">
+          <ul className="flex space-x-8 font-medium text-gray-700">
             {/* ABOUT Mega Menu */}
             <li
               className="relative group"
               onMouseEnter={() => setAboutOpen(true)}
               onMouseLeave={() => setAboutOpen(false)}
             >
-              <Link
-                href="#"
-                className="relative inline-block text-gray-700 transition-colors hover:text-[#00008B]"
-              >
+              <button className="relative inline-block hover:text-[#00008B]">
                 ABOUT
                 <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#191970] transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              </button>
 
               {aboutOpen && (
                 <div className="absolute left-0 mt-3 w-[800px] bg-white/80 backdrop-blur-md border border-white/20 shadow-lg rounded-md py-6 px-6 grid grid-cols-3 gap-6 text-sm text-gray-700 z-50">
@@ -79,7 +81,7 @@ export default function Header() {
                   {/* Column 2 */}
                   <ul className="space-y-2">
                     <li className="font-semibold text-gray-900">Leadership</li>
-                    <li><Link href="/components/Leadership/ChancellorMessage.tsx" className="hover:text-[#191970]">Chancellor</Link></li>
+                    <li><Link href="/about/chancellor" className="hover:text-[#191970]">Chancellor</Link></li>
                     <li><Link href="/about/mres" className="hover:text-[#191970]">MRES</Link></li>
                     <li><Link href="/about/directors-general" className="hover:text-[#191970]">Directors General&apos;s</Link></li>
                     <li><Link href="/about/founder-director" className="hover:text-[#191970]">Founder Director</Link></li>
@@ -104,11 +106,11 @@ export default function Header() {
             </li>
 
             {/* Other Links */}
-            {["ACADEMICS","PROGRAMMES","ADMISSIONS","INTERNATIONAL","CONTACT US"].map((item) => (
+            {navLinks.map((item) => (
               <li key={item} className="relative group">
                 <Link
-                  href={`/${item.toLowerCase().replace(" ","-")}`}
-                  className="relative inline-block text-gray-700 transition-colors hover:text-[#00008B]"
+                  href={`/${item.toLowerCase().replace(' ', '-')}`}
+                  className="relative inline-block hover:text-[#00008B]"
                 >
                   {item}
                   <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#191970] transition-all duration-300 group-hover:w-full"></span>
@@ -117,7 +119,7 @@ export default function Header() {
             ))}
           </ul>
 
-          {/* Search */}
+          {/* Desktop Search */}
           <div ref={searchContainerRef} className="relative ml-6">
             <form onSubmit={handleSearch}>
               <input
@@ -127,7 +129,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`transition-all duration-300 border border-gray-300 rounded-full pl-10 pr-4 py-1 outline-none w-0 opacity-0 ${
-                  searchOpen ? "w-48 opacity-100" : "w-0 opacity-0"
+                  searchOpen ? 'w-48 opacity-100' : 'w-0 opacity-0'
                 }`}
               />
               <FaSearch
@@ -153,7 +155,7 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="lg:hidden px-6 py-4 border-t bg-white">
           <ul className="flex flex-col space-y-2 font-medium text-[#191970]">
-            {["ABOUT","ACADEMICS","PROGRAMMES","ADMISSIONS","INTERNATIONAL","CONTACT US"].map((item) => (
+            {['ABOUT', ...navLinks].map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>

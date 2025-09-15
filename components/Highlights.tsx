@@ -2,6 +2,15 @@
 
 import { useState, useEffect, useRef } from 'react';
 
+// ✅ Strongly typed props for CountUp
+interface CountUpProps {
+  start: number;
+  end: number;
+  suffix?: string;
+  duration?: number;
+  delay?: number;
+}
+
 export default function StatsSection() {
   const [counted, setCounted] = useState(false);
   const [visibleCards, setVisibleCards] = useState<number[]>([]);
@@ -70,7 +79,7 @@ export default function StatsSection() {
     }
   ];
 
-  // Intersection Observer for count-up
+  // Count-up trigger
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -78,12 +87,16 @@ export default function StatsSection() {
       },
       { threshold: 0.5, rootMargin: '0px 0px -100px 0px' }
     );
+
     const element = document.getElementById('stats-section');
     if (element) observer.observe(element);
-    return () => element && observer.unobserve(element);
+
+    return () => {
+      if (element) observer.unobserve(element);
+    };
   }, [counted]);
 
-  // Intersection Observer for fade-in of cards
+  // Card fade-in trigger
   useEffect(() => {
     const cardObserver = new IntersectionObserver(
       (entries) => {
@@ -97,12 +110,13 @@ export default function StatsSection() {
       { threshold: 0.2 }
     );
 
-    cardsRef.current.forEach((card) => {
+    const currentRefs = cardsRef.current;
+    currentRefs.forEach((card) => {
       if (card) cardObserver.observe(card);
     });
 
     return () => {
-      cardsRef.current.forEach((card) => {
+      currentRefs.forEach((card) => {
         if (card) cardObserver.unobserve(card);
       });
     };
@@ -163,8 +177,8 @@ export default function StatsSection() {
   );
 }
 
-// CountUp Animation Component
-function CountUp({ start, end, suffix = "", duration = 2.5, delay = 0 }) {
+// ✅ Fixed CountUp with strict types
+function CountUp({ start, end, suffix = "", duration = 2.5, delay = 0 }: CountUpProps) {
   const [count, setCount] = useState(start);
 
   useEffect(() => {
