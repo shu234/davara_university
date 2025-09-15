@@ -8,8 +8,24 @@ interface CampusTourData {
 }
 
 // Minimal type for Pannellum
-interface PannellumType {
-  viewer: (id: string, options: object) => void;
+interface PannellumLib {
+  viewer: (
+    id: string,
+    options: {
+      type: string;
+      panorama: string;
+      autoLoad: boolean;
+      showControls: boolean;
+      compass: boolean;
+    }
+  ) => void;
+}
+
+// Extend window type so we don’t need `any`
+declare global {
+  interface Window {
+    pannellum?: PannellumLib;
+  }
 }
 
 export default function VirtualCampusTour() {
@@ -20,7 +36,7 @@ export default function VirtualCampusTour() {
   useEffect(() => {
     // Fetch from CMS (WordPress REST or GraphQL endpoint)
     fetch('https://your-wordpress-site.com/wp-json/custom/v1/campus-tour')
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((data: CampusTourData) => {
         setTourImage(data.imageUrl || '/campus-360.jpg');
       })
@@ -31,7 +47,8 @@ export default function VirtualCampusTour() {
   useEffect(() => {
     if (tourImage) {
       import('pannellum/build/pannellum.js').then((pannellumLib) => {
-        const pannellum = (pannellumLib as unknown as PannellumType).viewer || (window as any).pannellum;
+        const pannellum: PannellumLib | undefined =
+          (pannellumLib as unknown as PannellumLib) || window.pannellum;
 
         if (pannellum) {
           pannellum.viewer('panorama', {
