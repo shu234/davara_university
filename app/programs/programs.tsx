@@ -11,11 +11,12 @@ import {
   Clock,
   Star,
 } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
 // Map category slugs to icons + colors
 const categoryConfig: Record<
   string,
-  { icon: any; color: string }
+  { icon: LucideIcon; color: string }
 > = {
   undergraduate: {
     icon: GraduationCap,
@@ -44,6 +45,25 @@ interface Program {
   category: string;
 }
 
+interface WPProgram {
+  id: number;
+  title: { rendered: string };
+  meta?: {
+    duration?: string;
+    students?: string;
+    rating?: string;
+  };
+}
+
+interface WPCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  count: number;
+  featured_programs?: WPProgram[];
+}
+
 interface Category {
   id: number;
   name: string;
@@ -66,21 +86,21 @@ export default function ProgramsSection() {
           `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/program-categories?_embed&per_page=100`,
           { next: { revalidate: 60 } }
         );
-        const categories = await res.json();
+        const categories: WPCategory[] = await res.json();
 
         // Transform WP data into our shape
-        const formatted: Category[] = categories.map((cat: any) => ({
+        const formatted: Category[] = categories.map((cat) => ({
           id: cat.id,
           name: cat.name,
           slug: cat.slug,
           description: cat.description,
           count: cat.count,
-          featured: (cat.featured_programs || []).map((p: any) => ({
+          featured: (cat.featured_programs || []).map((p) => ({
             id: p.id,
             title: p.title.rendered,
             duration: p.meta?.duration || "N/A",
             students: p.meta?.students || "0",
-            rating: parseFloat(p.meta?.rating) || 0,
+            rating: parseFloat(p.meta?.rating ?? "0"),
             category: cat.slug,
           })),
         }));
