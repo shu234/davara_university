@@ -20,10 +20,17 @@ export default function NoticesAndAnnouncements() {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
-  const noticesRef = useRef<HTMLDivElement>(null);
-  const announcementsRef = useRef<HTMLDivElement>(null);
-  const pauseNotices = useRef<{ value: boolean; timeout: NodeJS.Timeout | null }>({ value: false, timeout: null });
-  const pauseAnnouncements = useRef<{ value: boolean; timeout: NodeJS.Timeout | null }>({ value: false, timeout: null });
+  const noticesRef = useRef<HTMLDivElement | null>(null);
+  const announcementsRef = useRef<HTMLDivElement | null>(null);
+
+  const pauseNotices = useRef<{ value: boolean; timeout: ReturnType<typeof setTimeout> | null }>({
+    value: false,
+    timeout: null,
+  });
+  const pauseAnnouncements = useRef<{ value: boolean; timeout: ReturnType<typeof setTimeout> | null }>({
+    value: false,
+    timeout: null,
+  });
 
   // Fetch data from WordPress
   useEffect(() => {
@@ -60,7 +67,7 @@ export default function NoticesAndAnnouncements() {
 
   // Auto-scroll
   const setupReel = (
-    ref: React.RefObject<HTMLDivElement>,
+    ref: React.RefObject<HTMLDivElement | null>,
     pauseRef: typeof pauseNotices
   ) => {
     let pos = 0;
