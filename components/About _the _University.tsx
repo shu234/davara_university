@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
-import { FaSearch, FaBars, FaTimes, FaGraduationCap, FaBook, FaChalkboardTeacher, FaUserGraduate, FaCertificate } from 'react-icons/fa';
+import { FaSearch, FaBars, FaTimes, FaGraduationCap, FaBook, FaChalkboardTeacher, FaUserGraduate, FaCertificate, FaArrowRight } from 'react-icons/fa';
 import Image from 'next/image';
 
 export default function Header() {
@@ -326,6 +326,11 @@ export default function Header() {
                         </li>
                       ))}
                     </ul>
+                    <div className="mt-4 pt-2 border-t border-gray-200">
+                      <Link href="/programmes/undergraduate" className="text-[#191970] hover:text-[#00008B] text-sm font-medium flex items-center">
+                        View All Undergraduate Programs <FaArrowRight className="ml-1 text-xs" />
+                      </Link>
+                    </div>
                   </div>
 
                   {/* Column 2 - Postgraduate Programmes */}
@@ -343,6 +348,11 @@ export default function Header() {
                         </li>
                       ))}
                     </ul>
+                    <div className="mt-4 pt-2 border-t border-gray-200">
+                      <Link href="/programmes/postgraduate" className="text-[#191970] hover:text-[#00008B] text-sm font-medium flex items-center">
+                        View All Postgraduate Programs <FaArrowRight className="ml-1 text-xs" />
+                      </Link>
+                    </div>
                   </div>
 
                   {/* Column 3 - Doctoral & Diploma Programmes */}
@@ -361,6 +371,11 @@ export default function Header() {
                           </li>
                         ))}
                       </ul>
+                      <div className="mt-3 pt-2 border-t border-gray-200">
+                        <Link href="/programmes/doctoral" className="text-[#191970] hover:text-[#00008B] text-sm font-medium flex items-center">
+                          View All Doctoral Programs <FaArrowRight className="ml-1 text-xs" />
+                        </Link>
+                      </div>
                     </div>
                     
                     <div>
@@ -377,6 +392,11 @@ export default function Header() {
                           </li>
                         ))}
                       </ul>
+                      <div className="mt-3 pt-2 border-t border-gray-200">
+                        <Link href="/programmes/diploma" className="text-[#191970] hover:text-[#00008B] text-sm font-medium flex items-center">
+                          View All Diploma Programs <FaArrowRight className="ml-1 text-xs" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
 
@@ -391,10 +411,20 @@ export default function Header() {
                         </div>
                       ))}
                     </div>
+                    
+                    {/* View All Programs Button */}
                     <div className="bg-[#191970] p-4 rounded-md text-white">
-                      <h3 className="font-semibold mb-2">Apply Now for 2024 Admissions</h3>
-                      <p className="text-xs mb-3">Limited seats available in popular programmes</p>
-                      <Link href="/admissions/apply" className="inline-block text-xs bg-white text-[#191970] hover:bg-gray-100 px-3 py-2 rounded-md transition-colors">
+                      <h3 className="font-semibold mb-2">Explore All Programs</h3>
+                      <p className="text-xs mb-3">Discover our complete range of academic offerings</p>
+                      <Link href="/programmes" className="inline-flex items-center justify-center text-sm bg-white text-[#191970] hover:bg-gray-100 px-4 py-2 rounded-md transition-colors w-full">
+                        View All Programs <FaArrowRight className="ml-2 text-xs" />
+                      </Link>
+                    </div>
+                    
+                    <div className="bg-[#f0f8ff] p-4 rounded-md">
+                      <h3 className="font-semibold text-[#191970] mb-2">Apply Now for 2024 Admissions</h3>
+                      <p className="text-xs text-gray-600 mb-3">Limited seats available in popular programmes</p>
+                      <Link href="/admissions/apply" className="inline-block text-xs bg-[#191970] text-white hover:bg-[#00008B] px-3 py-2 rounded-md transition-colors">
                         Apply Online
                       </Link>
                     </div>
@@ -502,6 +532,11 @@ export default function Header() {
                   <li><Link href="/programmes/postgraduate" className="block py-1">Postgraduate</Link></li>
                   <li><Link href="/programmes/doctoral" className="block py-1">Doctoral</Link></li>
                   <li><Link href="/programmes/diploma" className="block py-1">Diploma & Certificate</Link></li>
+                  <li className="pt-2 border-t border-gray-200">
+                    <Link href="/programmes" className="block py-2 text-[#191970] font-semibold flex items-center">
+                      View All Programs <FaArrowRight className="ml-2 text-xs" />
+                    </Link>
+                  </li>
                 </ul>
               )}
             </li>

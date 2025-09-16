@@ -112,9 +112,9 @@ export default function Footer() {
       </div>
 
       {/* Bottom Section */}
-      <div className="bg-gray-800 py-4 text-center text-xs text-gray-400">
+      {/* <div className="bg-gray-800 py-4 text-center text-xs text-gray-400">
         © 2024 Shri Davara University, All Rights Reserved.
-      </div>
+      </div> */}
     </footer>
   );
 }
