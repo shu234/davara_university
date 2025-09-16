@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
-import { FaSearch, FaBars, FaTimes, FaGraduationCap, FaBook, FaChalkboardTeacher } from 'react-icons/fa';
+import { FaSearch, FaBars, FaTimes, FaGraduationCap, FaBook, FaChalkboardTeacher, FaUserGraduate, FaCertificate } from 'react-icons/fa';
 import Image from 'next/image';
 
 export default function Header() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [academicsOpen, setAcademicsOpen] = useState(false);
+  const [programmesOpen, setProgrammesOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,6 +16,7 @@ export default function Header() {
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const aboutMenuRef = useRef<HTMLDivElement>(null);
   const academicsMenuRef = useRef<HTMLDivElement>(null);
+  const programmesMenuRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,16 +38,26 @@ export default function Header() {
       
       if (
         aboutMenuRef.current &&
-        !aboutMenuRef.current.contains(event.target as Node)
+        !aboutMenuRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest('li.relative.group')
       ) {
         setAboutOpen(false);
       }
       
       if (
         academicsMenuRef.current &&
-        !academicsMenuRef.current.contains(event.target as Node)
+        !academicsMenuRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest('li.relative.group')
       ) {
         setAcademicsOpen(false);
+      }
+      
+      if (
+        programmesMenuRef.current &&
+        !programmesMenuRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest('li.relative.group')
+      ) {
+        setProgrammesOpen(false);
       }
     };
     
@@ -53,7 +65,7 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const navLinks = ['PROGRAMMES', 'ADMISSIONS', 'INTERNATIONAL', 'CONTACT US'];
+  const navLinks = ['ADMISSIONS', 'INTERNATIONAL', 'CONTACT US'];
 
   // Academics menu data
   const academicsMenuData = {
@@ -69,6 +81,68 @@ export default function Header() {
       'Faculty of Vocational Education'
     ],
     description: 'Education for a Changing World! Shri Davara University is fast emerging University in Chhattisgarh focused on developing skills of students to ensure job placement for bright future.'
+  };
+
+  // Programmes menu data
+  const programmesMenuData = {
+    categories: [
+      {
+        title: 'Undergraduate Programmes',
+        icon: <FaUserGraduate className="text-[#191970] mr-2" />,
+        programmes: [
+          'Bachelor of Arts (BA)',
+          'Bachelor of Science (BSc)',
+          'Bachelor of Commerce (BCom)',
+          'Bachelor of Business Administration (BBA)',
+          'Bachelor of Computer Applications (BCA)',
+          'Bachelor of Education (BEd)'
+        ]
+      },
+      {
+        title: 'Postgraduate Programmes',
+        icon: <FaGraduationCap className="text-[#191970] mr-2" />,
+        programmes: [
+          'Master of Arts (MA)',
+          'Master of Science (MSc)',
+          'Master of Commerce (MCom)',
+          'Master of Business Administration (MBA)',
+          'Master of Computer Applications (MCA)',
+          'Master of Education (MEd)'
+        ]
+      },
+      {
+        title: 'Doctoral Programmes',
+        icon: <FaChalkboardTeacher className="text-[#191970] mr-2" />,
+        programmes: [
+          'PhD in Sciences',
+          'PhD in Humanities',
+          'PhD in Commerce',
+          'PhD in Education',
+          'PhD in Management'
+        ]
+      },
+      {
+        title: 'Diploma & Certificate Courses',
+        icon: <FaCertificate className="text-[#191970] mr-2" />,
+        programmes: [
+          'Diploma in Digital Marketing',
+          'Advanced Certificate in Data Science',
+          'Diploma in Financial Management',
+          'Certificate in Foreign Languages',
+          'Diploma in Web Development'
+        ]
+      }
+    ],
+    highlights: [
+      {
+        title: 'Industry-Focused Curriculum',
+        description: 'Programmes designed in collaboration with industry experts'
+      },
+      {
+        title: 'Placement Opportunities',
+        description: '90% placement rate with top companies'
+      }
+    ]
   };
 
   return (
@@ -92,7 +166,7 @@ export default function Header() {
             <li
               className="relative group"
               onMouseEnter={() => setAboutOpen(true)}
-              onMouseLeave={() => setAboutOpen(false)}
+              onMouseLeave={() => setTimeout(() => setAboutOpen(false), 200)}
             >
               <button className="relative inline-block hover:text-[#00008B]">
                 ABOUT
@@ -100,7 +174,12 @@ export default function Header() {
               </button>
 
               {aboutOpen && (
-                <div ref={aboutMenuRef} className="absolute left-0 mt-3 w-[800px] bg-white/80 backdrop-blur-md border border-white/20 shadow-lg rounded-md py-6 px-6 grid grid-cols-3 gap-6 text-sm text-gray-700 z-50">
+                <div 
+                  ref={aboutMenuRef}
+                  className="absolute left-0 mt-3 w-[800px] bg-white/80 backdrop-blur-md border border-white/20 shadow-lg rounded-md py-6 px-6 grid grid-cols-3 gap-6 text-sm text-gray-700 z-50"
+                  onMouseEnter={() => setAboutOpen(true)}
+                  onMouseLeave={() => setTimeout(() => setAboutOpen(false), 200)}
+                >
                   {/* Column 1 */}
                   <ul className="space-y-2">
                     <li><Link href="/about/overview" className="hover:text-[#191970]">Overview</Link></li>
@@ -143,7 +222,7 @@ export default function Header() {
             <li
               className="relative group"
               onMouseEnter={() => setAcademicsOpen(true)}
-              onMouseLeave={() => setAcademicsOpen(false)}
+              onMouseLeave={() => setTimeout(() => setAcademicsOpen(false), 200)}
             >
               <button className="relative inline-block hover:text-[#00008B]">
                 ACADEMICS
@@ -151,7 +230,12 @@ export default function Header() {
               </button>
 
               {academicsOpen && (
-                <div ref={academicsMenuRef} className="absolute left-0 mt-3 w-[900px] bg-white/80 backdrop-blur-md border border-white/20 shadow-lg rounded-md py-6 px-6 grid grid-cols-4 gap-6 text-sm text-gray-700 z-50">
+                <div 
+                  ref={academicsMenuRef}
+                  className="absolute left-0 mt-3 w-[900px] bg-white/80 backdrop-blur-md border border-white/20 shadow-lg rounded-md py-6 px-6 grid grid-cols-4 gap-6 text-sm text-gray-700 z-50"
+                  onMouseEnter={() => setAcademicsOpen(true)}
+                  onMouseLeave={() => setTimeout(() => setAcademicsOpen(false), 200)}
+                >
                   {/* Column 1 - Statistics */}
                   <div className="space-y-4">
                     <h3 className="font-semibold text-gray-900 border-b pb-2">Academic Overview</h3>
@@ -204,6 +288,116 @@ export default function Header() {
                     <Link href="/academics" className="mt-3 inline-block text-sm text-white bg-[#191970] hover:bg-[#00008B] px-4 py-2 rounded-md transition-colors">
                       Explore Academics
                     </Link>
+                  </div>
+                </div>
+              )}
+            </li>
+
+            {/* PROGRAMMES Mega Menu */}
+            <li
+              className="relative group"
+              onMouseEnter={() => setProgrammesOpen(true)}
+              onMouseLeave={() => setTimeout(() => setProgrammesOpen(false), 200)}
+            >
+              <button className="relative inline-block hover:text-[#00008B]">
+                PROGRAMMES
+                <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#191970] transition-all duration-300 group-hover:w-full"></span>
+              </button>
+
+              {programmesOpen && (
+                <div 
+                  ref={programmesMenuRef}
+                  className="absolute left-0 mt-3 w-[1000px] bg-white/80 backdrop-blur-md border border-white/20 shadow-lg rounded-md py-6 px-6 grid grid-cols-4 gap-6 text-sm text-gray-700 z-50"
+                  onMouseEnter={() => setProgrammesOpen(true)}
+                  onMouseLeave={() => setTimeout(() => setProgrammesOpen(false), 200)}
+                >
+                  {/* Column 1 - Undergraduate Programmes */}
+                  <div>
+                    <h3 className="font-semibold text-gray-900 border-b pb-2 mb-3 flex items-center">
+                      <FaUserGraduate className="text-[#191970] mr-2" />
+                      Undergraduate
+                    </h3>
+                    <ul className="space-y-2">
+                      {programmesMenuData.categories[0].programmes.map((programme, index) => (
+                        <li key={index}>
+                          <Link href={`/programmes/undergraduate/${programme.toLowerCase().replace(/[()]/g, '').replace(/\s+/g, '-')}`} className="hover:text-[#191970]">
+                            {programme}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Column 2 - Postgraduate Programmes */}
+                  <div>
+                    <h3 className="font-semibold text-gray-900 border-b pb-2 mb-3 flex items-center">
+                      <FaGraduationCap className="text-[#191970] mr-2" />
+                      Postgraduate
+                    </h3>
+                    <ul className="space-y-2">
+                      {programmesMenuData.categories[1].programmes.map((programme, index) => (
+                        <li key={index}>
+                          <Link href={`/programmes/postgraduate/${programme.toLowerCase().replace(/[()]/g, '').replace(/\s+/g, '-')}`} className="hover:text-[#191970]">
+                            {programme}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Column 3 - Doctoral & Diploma Programmes */}
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 border-b pb-2 mb-3 flex items-center">
+                        <FaChalkboardTeacher className="text-[#191970] mr-2" />
+                        Doctoral
+                      </h3>
+                      <ul className="space-y-2">
+                        {programmesMenuData.categories[2].programmes.slice(0, 3).map((programme, index) => (
+                          <li key={index}>
+                            <Link href={`/programmes/doctoral/${programme.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-[#191970]">
+                              {programme}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-semibold text-gray-900 border-b pb-2 mb-3 flex items-center">
+                        <FaCertificate className="text-[#191970] mr-2" />
+                        Diploma & Certificate
+                      </h3>
+                      <ul className="space-y-2">
+                        {programmesMenuData.categories[3].programmes.slice(0, 3).map((programme, index) => (
+                          <li key={index}>
+                            <Link href={`/programmes/diploma/${programme.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-[#191970]">
+                              {programme}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Column 4 - Highlights */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-gray-900 border-b pb-2">Programme Highlights</h3>
+                    <div className="space-y-4">
+                      {programmesMenuData.highlights.map((highlight, index) => (
+                        <div key={index} className="bg-[#f0f8ff] p-3 rounded-md">
+                          <h4 className="font-medium text-[#191970]">{highlight.title}</h4>
+                          <p className="text-xs text-gray-600 mt-1">{highlight.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="bg-[#191970] p-4 rounded-md text-white">
+                      <h3 className="font-semibold mb-2">Apply Now for 2024 Admissions</h3>
+                      <p className="text-xs mb-3">Limited seats available in popular programmes</p>
+                      <Link href="/admissions/apply" className="inline-block text-xs bg-white text-[#191970] hover:bg-gray-100 px-3 py-2 rounded-md transition-colors">
+                        Apply Online
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
@@ -290,6 +484,24 @@ export default function Header() {
                   <li><Link href="/academics/programmes" className="block py-1">Programmes</Link></li>
                   <li><Link href="/academics/undergraduate" className="block py-1">Undergraduate</Link></li>
                   <li><Link href="/academics/postgraduate" className="block py-1">Postgraduate</Link></li>
+                </ul>
+              )}
+            </li>
+            
+            <li>
+              <button 
+                onClick={() => setProgrammesOpen(!programmesOpen)}
+                className="flex items-center justify-between w-full py-2"
+              >
+                <span>PROGRAMMES</span>
+                <span>{programmesOpen ? '−' : '+'}</span>
+              </button>
+              {programmesOpen && (
+                <ul className="pl-4 mt-2 space-y-2 border-l-2 border-[#191970]">
+                  <li><Link href="/programmes/undergraduate" className="block py-1">Undergraduate</Link></li>
+                  <li><Link href="/programmes/postgraduate" className="block py-1">Postgraduate</Link></li>
+                  <li><Link href="/programmes/doctoral" className="block py-1">Doctoral</Link></li>
+                  <li><Link href="/programmes/diploma" className="block py-1">Diploma & Certificate</Link></li>
                 </ul>
               )}
             </li>
