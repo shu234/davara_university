@@ -1,4 +1,23 @@
-export async function getCampusLifeData() {
+export async function getCampusLifeData(): Promise<{
+  facilities: { name: string; image: string }[];
+  activities: { name: string; image: string }[];
+}> {
+  type CampusLifeItem = {
+    title: string;
+    featuredImage?: {
+      node?: {
+        sourceUrl?: string;
+      };
+    };
+  };
+
+  type CampusLifeResponse = {
+    data: {
+      facilities: { nodes: CampusLifeItem[] };
+      activities: { nodes: CampusLifeItem[] };
+    };
+  };
+
   const res = await fetch(`${process.env.WORDPRESS_API_URL}/graphql`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -31,13 +50,14 @@ export async function getCampusLifeData() {
     next: { revalidate: 60 }, // ISR - revalidates every 60s
   });
 
-  const json = await res.json();
+  const json: CampusLifeResponse = await res.json();
+
   return {
-    facilities: json.data.facilities.nodes.map((f: any) => ({
+    facilities: json.data.facilities.nodes.map((f) => ({
       name: f.title,
       image: f.featuredImage?.node?.sourceUrl || "/images/placeholder.jpg",
     })),
-    activities: json.data.activities.nodes.map((a: any) => ({
+    activities: json.data.activities.nodes.map((a) => ({
       name: a.title,
       image: a.featuredImage?.node?.sourceUrl || "/images/placeholder.jpg",
     })),
