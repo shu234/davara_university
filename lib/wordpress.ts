@@ -47,18 +47,17 @@ export async function getCampusLifeData(): Promise<{
         }
       `,
     }),
-    next: { revalidate: 60 }, // ISR - revalidates every 60s
+    next: { revalidate: 60 },
   });
 
-  // ✅ Fix: use generic with .json<T>() instead of casting to any
-  const json = (await res.json()) as CampusLifeResponse;
+  const json: CampusLifeResponse = await res.json();
 
   return {
-    facilities: json.data.facilities.nodes.map((f) => ({
+    facilities: json.data.facilities.nodes.map((f: CampusLifeItem) => ({
       name: f.title,
       image: f.featuredImage?.node?.sourceUrl || "/images/placeholder.jpg",
     })),
-    activities: json.data.activities.nodes.map((a) => ({
+    activities: json.data.activities.nodes.map((a: CampusLifeItem) => ({
       name: a.title,
       image: a.featuredImage?.node?.sourceUrl || "/images/placeholder.jpg",
     })),
