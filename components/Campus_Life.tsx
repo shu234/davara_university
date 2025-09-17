@@ -4,23 +4,106 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-const facilities = [
-  { name: "Hostel", image: "/images/facilities/hostel.jpg" },
-  { name: "Sports", image: "/images/facilities/sports.jpg" },
-  { name: "Library", image: "/images/facilities/library.jpg" },
-];
+type CampusItem = {
+  id: number;
+  name: string;
+  image: string;
+};
 
-const activities = [
-  { name: "Cultural Fest", image: "/images/activities/cultural.jpg" },
-  { name: "Tech Fest", image: "/images/activities/techfest.jpg" },
-];
+// ✅ Reusable Animated Card
+function AnimatedCard({
+  item,
+  index,
+  cardRefs,
+  visibleCards,
+  height = "h-56",
+  overlay = "center",
+}: {
+  item: CampusItem;
+  index: number;
+  cardRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
+  visibleCards: number[];
+  height?: string;
+  overlay?: "center" | "bottom";
+}) {
+  return (
+    <div
+      ref={(el) => {
+        cardRefs.current[index] = el;
+      }}
+      data-index={index}
+      className={`group relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 transform
+        ${visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
+        hover:shadow-xl hover:-translate-y-1`}
+    >
+      <Image
+        src={item.image}
+        alt={item.name}
+        width={500}
+        height={300}
+        className={`w-full ${height} object-cover transition-transform duration-500 group-hover:scale-110`}
+      />
+
+      {/* Overlay */}
+      {overlay === "center" ? (
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <p className="text-white font-semibold text-lg">{item.name}</p>
+        </div>
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <p className="text-white text-lg font-semibold">{item.name}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function CampusLifeSection() {
+  const [facilities, setFacilities] = useState<CampusItem[]>([]);
+  const [activities, setActivities] = useState<CampusItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [visibleCards, setVisibleCards] = useState<number[]>([]);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  // ✅ Fetch from WordPress REST API
   useEffect(() => {
-    const cards = cardRefs.current; // ✅ snapshot of current refs
+    async function fetchData() {
+      try {
+        const [facilitiesRes, activitiesRes] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_WP_API}/facilities`),
+          fetch(`${process.env.NEXT_PUBLIC_WP_API}/activities`),
+        ]);
+
+        const facilitiesData = await facilitiesRes.json();
+        const activitiesData = await activitiesRes.json();
+
+        setFacilities(
+          facilitiesData.map((item: any) => ({
+            id: item.id,
+            name: item.title.rendered,
+            image: item.acf?.image || "/images/placeholder.jpg",
+          }))
+        );
+
+        setActivities(
+          activitiesData.map((item: any) => ({
+            id: item.id,
+            name: item.title.rendered,
+            image: item.acf?.image || "/images/placeholder.jpg",
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching Campus Life data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // ✅ Animation Observer
+  useEffect(() => {
+    const cards = cardRefs.current;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -45,6 +128,14 @@ export default function CampusLifeSection() {
     };
   }, [visibleCards]);
 
+  if (loading) {
+    return (
+      <section className="py-20 text-center">
+        <p className="text-gray-600">Loading campus life...</p>
+      </section>
+    );
+  }
+
   return (
     <section className="relative bg-gradient-to-b from-[#f8f9fa] to-white py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,62 +149,42 @@ export default function CampusLifeSection() {
           </p>
         </div>
 
-        {/* Facilities Preview */}
+        {/* Facilities */}
         <div className="mb-14">
           <h3 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6 text-center">
             Our Facilities
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {facilities.map((facility, index) => (
-              <div
-                key={facility.name}
-                ref={(el) => (cardRefs.current[index] = el)}
-                data-index={index}
-                className={`group relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 transform
-                  ${visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
-                  hover:shadow-xl hover:-translate-y-1`}
-              >
-                <Image
-                  src={facility.image}
-                  alt={facility.name}
-                  width={400}
-                  height={250}
-                  className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <p className="text-white font-semibold text-lg">{facility.name}</p>
-                </div>
-              </div>
+              <AnimatedCard
+                key={facility.id}
+                item={facility}
+                index={index}
+                cardRefs={cardRefs}
+                visibleCards={visibleCards}
+                height="h-56"
+                overlay="center"
+              />
             ))}
           </div>
         </div>
 
-        {/* Activities Preview */}
+        {/* Activities */}
         <div className="mb-14">
           <h3 className="text-xl md:text-2xl font-semibold text-gray-800 mb-6 text-center">
             Student Activities
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {activities.map((activity, index) => (
-              <div
-                key={activity.name}
-                ref={(el) => (cardRefs.current[facilities.length + index] = el)}
-                data-index={facilities.length + index}
-                className={`group relative overflow-hidden rounded-2xl shadow-md transition-all duration-700 transform
-                  ${visibleCards.includes(facilities.length + index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
-                  hover:shadow-xl hover:-translate-y-1`}
-              >
-                <Image
-                  src={activity.image}
-                  alt={activity.name}
-                  width={500}
-                  height={300}
-                  className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <p className="text-white text-lg font-semibold">{activity.name}</p>
-                </div>
-              </div>
+              <AnimatedCard
+                key={activity.id}
+                item={activity}
+                index={facilities.length + index}
+                cardRefs={cardRefs}
+                visibleCards={visibleCards}
+                height="h-64"
+                overlay="bottom"
+              />
             ))}
           </div>
         </div>
