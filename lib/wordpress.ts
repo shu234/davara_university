@@ -50,7 +50,8 @@ export async function getCampusLifeData(): Promise<{
     next: { revalidate: 60 }, // ISR - revalidates every 60s
   });
 
-  const json: CampusLifeResponse = await res.json();
+  // ✅ Fix: use generic with .json<T>() instead of casting to any
+  const json = (await res.json()) as CampusLifeResponse;
 
   return {
     facilities: json.data.facilities.nodes.map((f) => ({
