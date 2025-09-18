@@ -14,7 +14,7 @@ interface CountUpProps {
 export default function StatsSection() {
   const [counted, setCounted] = useState(false);
   const [visibleCards, setVisibleCards] = useState<number[]>([]);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const cardsRef = useRef<Array<HTMLDivElement | null>>([]);
 
   const stats = [
     {
@@ -140,7 +140,9 @@ export default function StatsSection() {
           {stats.map((stat, index) => (
             <div
               key={stat.id}
-              ref={(el) => (cardsRef.current[index] = el)}
+              ref={(el) => {
+  cardsRef.current[index] = el;
+}}
               data-index={index}
               className={`group bg-white rounded-2xl shadow-md flex flex-col items-center text-center p-6 border border-[#E8F1F5] 
                 transition-all duration-500 ease-out
