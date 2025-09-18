@@ -2,7 +2,7 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 
-interface FormData {
+interface AdmissionFormData {
   // Academic
   enquiryNo: string;
   enquiryDate: string;
@@ -63,7 +63,7 @@ interface FormData {
 }
 
 export default function AdmissionForm() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<AdmissionFormData>({
     enquiryNo: "ENQ000120",
     enquiryDate: "2025-09-13",
     course: "",
@@ -127,7 +127,7 @@ export default function AdmissionForm() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data = new FormData();
+    const data = new AdmissionFormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value instanceof File) {
         data.append(key, value);

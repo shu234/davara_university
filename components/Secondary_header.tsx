@@ -48,7 +48,7 @@ export default function SecondaryHeader() {
         {/* Left section */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-6">
           <Link
-            href="/components/Admission_page.tsx"
+            href="/admission" // ✅ Correct route instead of .tsx
             className="bg-yellow-400 text-[#191970] font-semibold px-3 py-1 rounded hover:bg-yellow-300 transition"
           >
             Admission
@@ -69,15 +69,18 @@ export default function SecondaryHeader() {
             {socialLinks.map((social) => {
               const Icon = social.icon;
               return (
-                <Link
+                <a
                   key={social.name}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
                 >
-                  <Icon className={`w-5 h-5 transition ${social.color}`} />
-                </Link>
+                  <Icon
+                    aria-hidden="true"
+                    className={`w-5 h-5 transition ${social.color}`}
+                  />
+                </a>
               );
             })}
           </div>
@@ -100,7 +103,7 @@ export default function SecondaryHeader() {
             role="menu"
           >
             {socialLinks.map((social) => (
-              <Link
+              <a
                 key={social.name}
                 href={social.href}
                 target="_blank"
@@ -109,7 +112,7 @@ export default function SecondaryHeader() {
                 role="menuitem"
               >
                 {social.name}
-              </Link>
+              </a>
             ))}
           </div>
         )}

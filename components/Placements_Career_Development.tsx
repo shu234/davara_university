@@ -4,8 +4,15 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
+// ✅ Define types for CountUp props
+interface CountUpProps {
+  end: number;
+  suffix?: string;
+  duration?: number;
+}
+
 // CountUp Component for animated stats
-function CountUp({ end, suffix = "", duration = 2 }) {
+function CountUp({ end, suffix = "", duration = 2 }: CountUpProps) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -19,6 +26,7 @@ function CountUp({ end, suffix = "", duration = 2 }) {
       }
       setCount(start);
     }, stepTime);
+
     return () => clearInterval(interval);
   }, [end, duration]);
 

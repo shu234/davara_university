@@ -7,24 +7,21 @@ interface CampusTourData {
   imageUrl?: string;
 }
 
-// Minimal type for Pannellum
-interface PannellumLib {
-  viewer: (
-    id: string,
-    options: {
-      type: 'equirectangular';
-      panorama: string;
-      autoLoad: boolean;
-      showControls: boolean;
-      compass: boolean;
-    }
-  ) => void;
-}
-
 // Extend window type
 declare global {
   interface Window {
-    pannellum?: PannellumLib;
+    pannellum?: {
+      viewer: (
+        id: string,
+        options: {
+          type: 'equirectangular';
+          panorama: string;
+          autoLoad: boolean;
+          showControls: boolean;
+          compass: boolean;
+        }
+      ) => void;
+    };
   }
 }
 
@@ -33,6 +30,7 @@ export default function VirtualCampusTour() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch image from CMS
   useEffect(() => {
     fetch('https://your-wordpress-site.com/wp-json/custom/v1/campus-tour')
       .then((res) => res.json())
@@ -43,23 +41,31 @@ export default function VirtualCampusTour() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Load pannellum safely only on client
   useEffect(() => {
-    if (tourImage) {
-      import('pannellum/build/pannellum.js').then((pannellumLib: unknown) => {
-        const pannellum =
-          (pannellumLib as PannellumLib) || window.pannellum;
+    if (!tourImage) return;
 
-        if (pannellum) {
-          pannellum.viewer('panorama', {
-            type: 'equirectangular',
-            panorama: tourImage,
-            autoLoad: true,
-            showControls: true,
-            compass: true,
-          });
-        }
-      });
-    }
+    const script = document.createElement('script');
+    script.src =
+      'https://cdn.jsdelivr.net/npm/pannellum/build/pannellum.js';
+    script.async = true;
+
+    script.onload = () => {
+      if (window.pannellum) {
+        window.pannellum.viewer('panorama', {
+          type: 'equirectangular',
+          panorama: tourImage,
+          autoLoad: true,
+          showControls: true,
+          compass: true,
+        });
+      }
+    };
+
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
   }, [tourImage]);
 
   if (loading) {
