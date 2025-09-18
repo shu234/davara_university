@@ -10,6 +10,12 @@ type CampusItem = {
   image: string;
 };
 
+type WpItem = {
+  id: number;
+  title: { rendered: string };
+  acf?: { image?: string };
+};
+
 // ✅ Reusable Animated Card
 function AnimatedCard({
   item,
@@ -74,11 +80,11 @@ export default function CampusLifeSection() {
           fetch(`${process.env.NEXT_PUBLIC_WP_API}/activities`),
         ]);
 
-        const facilitiesData = await facilitiesRes.json();
-        const activitiesData = await activitiesRes.json();
+        const facilitiesData: WpItem[] = await facilitiesRes.json();
+        const activitiesData: WpItem[] = await activitiesRes.json();
 
         setFacilities(
-          facilitiesData.map((item: any) => ({
+          facilitiesData.map((item: WpItem): CampusItem => ({
             id: item.id,
             name: item.title.rendered,
             image: item.acf?.image || "/images/placeholder.jpg",
@@ -86,7 +92,7 @@ export default function CampusLifeSection() {
         );
 
         setActivities(
-          activitiesData.map((item: any) => ({
+          activitiesData.map((item: WpItem): CampusItem => ({
             id: item.id,
             name: item.title.rendered,
             image: item.acf?.image || "/images/placeholder.jpg",
